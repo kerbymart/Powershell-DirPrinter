@@ -1,7 +1,7 @@
 # Check if the required number of arguments was provided
 if ($args.Count -lt 2)
 {
-    Write-Error "Error: Missing arguments. Usage: script.ps1 baseDirectory outputFile [-SkipBinary]"
+    Write-Error "Error: Missing arguments. Usage: DirPrinter.ps1 baseDirectory outputFile [-SkipBinary]"
     exit 1
 }
 
@@ -31,7 +31,7 @@ $outputFileStream.SetLength(0)
 $output = New-Object System.IO.StreamWriter($outputFileStream)
 
 # Write the header to the output file
-$output.WriteLine("Files processed:")
+$output.WriteLine("Files:")
 $mdFiles | ForEach-Object {
     $output.WriteLine(" - Filename: $( $_.Name )")
     $output.WriteLine("   Filepath: $( $_.FullName )")
@@ -40,7 +40,7 @@ $otherFiles | ForEach-Object {
     $output.WriteLine(" - Filename: $( $_.Name )")
     $output.WriteLine("   Filepath: $( $_.FullName )")
 }
-$output.WriteLine("Total number of files processed: $( $mdFiles.Count + $otherFiles.Count )")
+$output.WriteLine("Total number of files: $( $mdFiles.Count + $otherFiles.Count )")
 $output.WriteLine()
 
 # Initialize the progress counter
@@ -65,11 +65,15 @@ foreach ($file in $mdFiles)
     $contents = Get-Content -Path $file.FullName -Raw
 
     # Write the file name to the output file
-    $output.WriteLine("File: $( $file.FullName )")
+    $output.WriteLine()
+    $output.WriteLine("---")
+    $output.WriteLine("--- Filename: $( $file.Name)")
+    $output.WriteLine("--- Filepath: $( $file.FullName)")
+    $output.WriteLine("---")
+    $output.WriteLine()
 
     # Write the contents of the file to the output file
     $output.WriteLine($contents)
-    $output.WriteLine()
 }
 
 # Process the remaining files
@@ -93,12 +97,15 @@ foreach ($file in $otherFiles)
     # Read the contents of the file as a single string
     $contents = Get-Content -Path $file.FullName -Raw
 
-    # Write the file name to the output file
-    $output.WriteLine("File: $( $file.FullName )")
+    $output.WriteLine()
+    $output.WriteLine("---")
+    $output.WriteLine("--- Filename: $( $file.Name)")
+    $output.WriteLine("--- Filepath: $( $file.FullName)")
+    $output.WriteLine("---")
+    $output.WriteLine()
 
     # Write the contents of the file to the output file
     $output.WriteLine($contents)
-    $output.WriteLine()
 }
 
 # Close the output file
